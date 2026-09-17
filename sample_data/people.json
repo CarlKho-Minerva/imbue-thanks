@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "title": "Thank you, Imbue.",
+    "eyebrow": "292 ivy / last day of coworking / 2026-09-17",
+    "lead": "sample content. the real people.json lives in the app data dir.",
+    "gather_url": "",
+    "gather_blurb": "Same desks, same chairs, same plant wall, fewer real plants. Walk to a desk and the message left there is yours.",
+    "clip_blurb": "Every clip is about fifteen seconds and unlisted. Yours came by email. If the message is obvious, watch it anyway, because the second half is me asking for twenty minutes of your time.",
+    "ask_title": "One ask: please stop using Loom.",
+    "ask_body": "Your recordings are your data, and Loom trains on the link. Cap is open source and I run it on my own box. Spinning it up took an afternoon, Matthew and Zack handed me the instructions, and I will walk anyone through it in fifteen minutes.",
+    "offer_title": "One offer: a second pair of hands.",
+    "offer_body": "Office quality of life, feedback on a product, someone to test a weird idea before a user finds the sharp edge. I bike everywhere and my muscle memory still steers to Ivy Street. Ask me.",
+    "footer": "carl@somach.life / self hosted on my own OpenHost zone, because of you lot"
+  },
+  "people": [
+    {
+      "name": "Sample Person",
+      "first": "Sample",
+      "role": "Engineering",
+      "slug": "sample-link",
+      "headline": "This is what a page looks like.",
+      "note": "Real notes are copied in over oh app ssh, never committed.",
+      "asks": [
+        "A walk, whenever."
+      ],
+      "cap_url": "",
+      "video": ""
+    }
+  ]
+}

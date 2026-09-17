@@ -1,0 +1,24 @@
+[app]
+name = "thanks"
+version = "0.1.0"
+description = "A farewell wall for the Imbue office: one unlisted page per person, plus the Gather replica."
+
+[runtime.container]
+image = "Dockerfile"
+port = 8080
+
+[routing]
+health_check = "/healthz"
+# The whole app is public on purpose: the people reading it do not have accounts on
+# this zone. That is only safe because app.py has NO write endpoint at all - no
+# upload, no POST, no form. Content is copied in over `oh app ssh`, never over HTTP.
+# public_paths is PREFIX-matched, so "/" makes everything public. Do not add a write
+# route to this app without first taking "/" off this list.
+public_paths = ["/"]
+
+[resources]
+memory_mb = 128
+cpu_millicores = 100
+
+[data]
+app_data = true
