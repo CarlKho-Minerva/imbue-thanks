@@ -13,6 +13,7 @@ import json
 import mimetypes
 import os
 import re
+import secrets
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -157,6 +158,95 @@ def person_page(doc, person):
 <div class="foot">{html.escape(m.get('footer',''))}
 <span class="pill">this page is unlisted</span></div>""")
 
+
+TELEPROMPTER = """<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="robots" content="noindex,nofollow"><title>Teleprompter</title><style>
+@font-face{font-family:Geist;src:url(/fonts/geist.woff2)format('woff2-variations');font-weight:100 900;font-display:swap}
+@font-face{font-family:'Geist Mono';src:url(/fonts/geist-mono.woff2)format('woff2-variations');font-weight:100 900;font-display:swap}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#0a0a0a;color:#ededed;
+ font-family:Geist,Inter,system-ui,-apple-system,sans-serif;overscroll-behavior:none}
+body{display:flex;flex-direction:column}
+header{flex:0 0 auto;padding:12px 16px;border-bottom:1px solid #262626;display:flex;
+ align-items:center;gap:10px;font-family:'Geist Mono',ui-monospace,monospace;font-size:12px;color:#7a7a7a}
+header .who{color:#ededed;font-family:Geist,system-ui,sans-serif;font-size:15px;font-weight:600;
+ letter-spacing:-.3px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+main{flex:1 1 auto;overflow-y:auto;padding:20px 20px 8px;-webkit-overflow-scrolling:touch}
+#script{font-size:26px;line-height:1.45;letter-spacing:-.4px;white-space:pre-wrap;margin:0 0 24px}
+#head{font-size:13px;line-height:18px;color:#7a7a7a;margin:0 0 14px;
+ font-family:'Geist Mono',ui-monospace,monospace}
+.dim{color:#52a8ff}
+nav{flex:0 0 auto;display:flex;gap:8px;padding:10px 12px 22px;border-top:1px solid #262626;background:#0a0a0a}
+button{flex:1;appearance:none;border:1px solid #262626;background:#111;color:#ededed;
+ border-radius:12px;padding:16px 10px;font:inherit;font-size:15px;font-weight:600;letter-spacing:-.3px}
+button:active{background:#1b1b1b}
+button.go{background:#ededed;color:#0a0a0a;border-color:#ededed;flex:2}
+button.small{flex:0 0 62px;font-family:'Geist Mono',ui-monospace,monospace;font-size:13px;font-weight:400}
+.done{color:#52a8ff}
+</style></head><body>
+<header>
+  <span id="count">00 / 00</span>
+  <span class="who" id="who">.</span>
+  <span id="secs"></span>
+  <button class="small" id="size" style="padding:6px 8px;border-radius:8px">Aa</button>
+</header>
+<main><p id="head"></p><p id="script">loading</p></main>
+<nav>
+  <button id="prev">Back</button>
+  <button class="go" id="next">Recorded, next</button>
+  <button class="small" id="skip">Skip</button>
+</nav>
+<script>
+var DATA = __DATA__;
+var KEY = 'prompt-' + DATA.token;
+var i = 0, size = 26;
+try { var s = JSON.parse(localStorage.getItem(KEY) || '{}'); i = s.i || 0; size = s.size || 26; } catch(e){}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify({i:i, size:size})); } catch(e){} }
+function render(){
+  if (i < 0) i = 0;
+  if (i > DATA.clips.length - 1) i = DATA.clips.length - 1;
+  var c = DATA.clips[i];
+  document.getElementById('count').textContent = (i+1 < 10 ? '0' : '') + (i+1) + ' / ' + DATA.clips.length;
+  document.getElementById('who').textContent = c.who;
+  document.getElementById('secs').textContent = c.secs ? '~' + c.secs + 's' : '';
+  document.getElementById('head').textContent = c.head || '';
+  var el = document.getElementById('script');
+  el.textContent = c.text;
+  el.style.fontSize = size + 'px';
+  document.querySelector('main').scrollTop = 0;
+  document.getElementById('next').textContent = (i === DATA.clips.length - 1) ? 'Done' : 'Recorded, next';
+  save();
+}
+document.getElementById('next').onclick = function(){ i++; render(); };
+document.getElementById('prev').onclick = function(){ i--; render(); };
+document.getElementById('skip').onclick = function(){ i++; render(); };
+document.getElementById('size').onclick = function(){ size = size >= 34 ? 20 : size + 4; render(); };
+document.addEventListener('keydown', function(e){
+  if (e.key === 'ArrowRight' || e.key === ' ') { i++; render(); }
+  if (e.key === 'ArrowLeft') { i--; render(); }
+});
+render();
+</script></body></html>"""
+
+
+def teleprompter(doc):
+    """Phone-sized reader for the clips. Reached only by the secret token."""
+    clips = [{"who": "Opening clip, everyone sees this",
+              "head": "hold up the office pan, then to camera",
+              "secs": 0, "text": (doc.get("meta", {}).get("opening") or "").strip()}]
+    for p in doc.get("people", []):
+        tag = "" if p.get("named_in_recording", True) else "  (not on the seating plan)"
+        clips.append({"who": p.get("name", "") + tag,
+                      "head": (p.get("role", "") + " / " + p.get("headline", "")).strip(" /"),
+                      "secs": p.get("secs", 0),
+                      "text": (p.get("script") or "").strip()})
+    clips.append({"who": "Closing clip, leave this at the empty desk",
+                  "head": "to camera", "secs": 0,
+                  "text": (doc.get("meta", {}).get("closing") or "").strip()})
+    payload = json.dumps({"clips": clips, "token": doc.get("meta", {}).get("prompt_token", "x")})
+    return TELEPROMPTER.replace("__DATA__", payload)
+
 # ---------------------------------------------------------------- serve
 
 class Handler(BaseHTTPRequestHandler):
@@ -202,6 +292,12 @@ class Handler(BaseHTTPRequestHandler):
         doc = load()
         if path == "/":
             return self._send(200, landing(doc))
+        if path.startswith("/t/"):
+            token = path[len("/t/"):]
+            want = doc.get("meta", {}).get("prompt_token") or ""
+            if not want or not SLUG_RE.match(token or "") or not secrets.compare_digest(token, want):
+                return self._send(404, page("not found", "<h1>404</h1>"))
+            return self._send(200, teleprompter(doc))
         if path.startswith("/p/"):
             slug = path[len("/p/"):]
             person = find(doc, slug) if SLUG_RE.match(slug or "") else None
