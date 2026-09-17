@@ -141,6 +141,26 @@ def landing(doc):
 <div class="foot">{html.escape(m.get('footer',''))}</div>""")
 
 
+def bench_block(doc, heading_level="h2"):
+    b = doc.get("meta", {}).get("bench") or {}
+    if not b:
+        return ""
+    return (f'<{heading_level}>{html.escape(b.get("title",""))}</{heading_level}>'
+            f'<p class="eyebrow">{html.escape(b.get("sub",""))}</p>'
+            f'<div class="card"><h3>Methods</h3><p>{html.escape(b.get("methods",""))}</p></div>'
+            f'<div class="card"><h3>Results</h3><p>{html.escape(b.get("results",""))}</p></div>')
+
+
+def bench_page(doc):
+    m = doc.get("meta", {})
+    return page(m.get("bench", {}).get("title", "benchmark"), f"""
+<p class="eyebrow">local model bench / carl kho</p>
+<h1>{html.escape(m.get("bench", {}).get("title", ""))}</h1>
+<p class="lead">{html.escape(m.get("bench", {}).get("sub", ""))}</p>
+{bench_block(doc)}
+<div class="foot">{html.escape(m.get('footer',''))}</div>""")
+
+
 def person_page(doc, person):
     m = doc.get("meta", {})
     gather = (m.get("gather_url") or "").strip()
@@ -152,6 +172,7 @@ def person_page(doc, person):
 {player(person)}
 <div class="card"><p class="note">{html.escape(person.get('note',''))}</p></div>
 {f'<h2>If you have ten minutes</h2><ul>{asks}</ul>' if asks else ''}
+{bench_block(doc) if person.get("bench") else ''}
 <h2>The replica</h2>
 <p>{html.escape(m.get('gather_blurb',''))}</p>
 {f'<p><a href="{html.escape(gather)}">Open the office in Gather</a></p>' if gather else ''}
@@ -292,6 +313,8 @@ class Handler(BaseHTTPRequestHandler):
         doc = load()
         if path == "/":
             return self._send(200, landing(doc))
+        if path == "/bench":
+            return self._send(200, bench_page(doc))
         if path.startswith("/t/"):
             token = path[len("/t/"):]
             want = doc.get("meta", {}).get("prompt_token") or ""
