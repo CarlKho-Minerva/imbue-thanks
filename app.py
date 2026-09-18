@@ -387,7 +387,7 @@ D.items.forEach(function(p, i){
 });
 document.getElementById('copy').onclick = function(){
   var out = D.items.filter(function(p){ return state[p.to]==='bad'; })
-                   .map(function(p){ return 'FLAG '+p.name; }).join('\n') || 'nothing flagged';
+                   .map(function(p){ return 'FLAG '+p.name; }).join('\\n') || 'nothing flagged';
   var t = document.getElementById('clip'); t.value = out; t.select();
   try{ document.execCommand('copy'); }catch(e){}
   this.textContent = 'Copied';
