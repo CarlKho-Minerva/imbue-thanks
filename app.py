@@ -53,38 +53,58 @@ CSS = """
  font-weight:100 900;font-display:swap}
 @font-face{font-family:'Geist Mono';src:url(/fonts/geist-mono.woff2)format('woff2-variations');
  font-weight:100 900;font-display:swap}
-:root{--page:#0a0a0a;--card:#111;--line:#262626;--ink:#ededed;--body:#a1a1a1;
- --mute:#7a7a7a;--accent:#52a8ff;--accent-bg:#0d2440}
+/* Imbue's own tokens, read off imbue.com. Their palette is named after feelings. */
+:root{
+ --web-white:#faf8f2;   /* page */
+ --clarity:#fcefd4;     /* warm card */
+ --comfort:#f5d6a0;     /* warm accent block */
+ --confusion:#0b292b;   /* ink, a very dark teal */
+ --confidence:#f50d00;  /* the one red */
+ --inspiration:#e9ecd9; /* pale green */
+ --peace:#8eafcb;       /* blue */
+ --respect:#d26645;     /* terracotta */
+ --strength:#cfc7b3;    /* hairline */
+ --body:#3d5254;
+ --mute:#7d8b8a;
+}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--page);color:var(--ink);
- font-family:Geist,Inter,system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.5}
-.wrap{max-width:720px;margin:0 auto;padding:64px 24px 96px}
+body{margin:0;background:var(--web-white);color:var(--confusion);
+ font-family:Geist,Inter,system-ui,-apple-system,sans-serif;font-size:17px;line-height:1.6}
+.wrap{max-width:680px;margin:0 auto;padding:72px 24px 110px}
 .eyebrow{font-family:'Geist Mono',ui-monospace,Menlo,monospace;font-size:12px;
- line-height:16px;text-transform:uppercase;color:var(--mute);margin:0 0 16px}
-h1{font-size:48px;line-height:48px;font-weight:600;letter-spacing:-2.4px;margin:0 0 16px}
-h2{font-size:24px;line-height:32px;font-weight:600;letter-spacing:-.96px;margin:48px 0 16px}
-p{color:var(--body);margin:0 0 16px}
-p.lead{color:var(--ink);font-size:20px;line-height:28px;letter-spacing:-.6px}
-a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;
- padding:24px;margin:24px 0}
-.card h3{margin:0 0 8px;font-size:20px;line-height:28px;font-weight:600;letter-spacing:-.6px}
-.pill{display:inline-block;font-family:'Geist Mono',ui-monospace,monospace;font-size:12px;
- line-height:16px;padding:4px 10px;border-radius:9999px;background:var(--accent-bg);
- color:var(--accent)}
-video,iframe{width:100%;border:1px solid var(--line);border-radius:8px;background:#000;
+ line-height:16px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:0 0 20px}
+h1{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+ font-size:52px;line-height:1.05;font-weight:400;letter-spacing:-.5px;margin:0 0 20px}
+h2{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+ font-size:28px;line-height:1.2;font-weight:400;margin:56px 0 14px}
+h3{font-size:19px;line-height:1.3;font-weight:600;margin:0 0 8px;letter-spacing:-.2px}
+p{color:var(--body);margin:0 0 18px}
+p.lead{color:var(--confusion);font-size:21px;line-height:1.5;
+ font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif}
+a{color:var(--confusion);text-decoration:underline;text-underline-offset:3px;
+ text-decoration-color:var(--confidence);text-decoration-thickness:2px}
+a:hover{color:var(--confidence)}
+.card{background:#fff;border:1px solid var(--strength);border-radius:4px;
+ padding:26px;margin:26px 0}
+.card.warm{background:var(--clarity);border-color:#e8d5aa}
+.pill{display:inline-block;font-family:'Geist Mono',ui-monospace,monospace;font-size:11px;
+ line-height:16px;letter-spacing:.08em;text-transform:uppercase;padding:5px 11px;
+ border-radius:999px;background:var(--inspiration);color:#40513f}
+video,iframe{width:100%;border:1px solid var(--strength);border-radius:4px;background:#000;
  aspect-ratio:16/9;display:block}
-.note{white-space:pre-wrap;color:var(--ink)}
-ul{color:var(--body);padding-left:20px}
-li{margin-bottom:8px}
-.foot{margin-top:64px;padding-top:24px;border-top:1px solid var(--line);
- font-family:'Geist Mono',ui-monospace,monospace;font-size:12px;color:var(--mute)}
-.missing{border:1px dashed var(--line);border-radius:8px;padding:24px;color:var(--mute);
- font-family:'Geist Mono',ui-monospace,monospace;font-size:12px}
-@media(max-width:600px){h1{font-size:32px;line-height:40px;letter-spacing:-1.28px}
- .wrap{padding:40px 20px 64px}}
+.note{white-space:pre-wrap;color:var(--confusion);font-size:18px}
+ul{color:var(--body);padding-left:20px;margin:0}
+li{margin-bottom:9px}
+.rule{height:1px;background:var(--strength);border:0;margin:56px 0 0}
+.foot{margin-top:22px;font-family:'Geist Mono',ui-monospace,monospace;font-size:12px;
+ line-height:1.7;color:var(--mute)}
+.missing{border:1px dashed var(--strength);border-radius:4px;padding:26px;color:var(--mute);
+ font-family:'Geist Mono',ui-monospace,monospace;font-size:12px;background:#fff}
+.tape{display:inline-block;background:var(--comfort);padding:2px 10px;transform:rotate(-1.2deg);
+ font-family:'Geist Mono',ui-monospace,monospace;font-size:12px;letter-spacing:.06em;
+ text-transform:uppercase;color:#4b3a10}
+@media(max-width:600px){h1{font-size:36px}.wrap{padding:44px 20px 72px}body{font-size:16px}}
 """
 
 
@@ -113,6 +133,22 @@ def player(person):
             'time, so it lands here shortly.</div>')
 
 
+def map_block(doc):
+    """The labelled office map, clickable straight into the Gather space."""
+    m = doc.get("meta", {})
+    img = (m.get("map_image") or "").strip()
+    gather = (m.get("gather_url") or "").strip()
+    if not img:
+        return ('<div class="missing">the labelled office map goes here '
+                '(app_data/thanks/media/office-map.png)</div>')
+    tag = (f'<img src="/media/{html.escape(img)}" alt="the Imbue office, rebuilt, '
+           f'with everyone\'s desk labelled" style="width:100%;border:1px solid '
+           f'var(--strength);border-radius:4px;display:block">')
+    if gather:
+        tag = f'<a href="{html.escape(gather)}" style="text-decoration:none">{tag}</a>'
+    return tag
+
+
 def landing(doc):
     m = doc.get("meta", {})
     gather = (m.get("gather_url") or "").strip()
@@ -130,7 +166,10 @@ def landing(doc):
 {player(m)}
 <h2>The office, rebuilt</h2>
 <p>{html.escape(m.get('gather_blurb',''))}</p>
-{gather_block}
+{map_block(doc)}
+<p style="margin-top:14px">{gather_block}</p>
+<div class="card warm"><h3>One thing before you join</h3>
+<p style="margin:0">{html.escape(m.get('gather_note',''))}</p></div>
 <h2>Your clip</h2>
 <p>{html.escape(m.get('clip_blurb',''))}</p>
 <h2>One ask, one offer</h2>
@@ -175,7 +214,10 @@ def person_page(doc, person):
 {bench_block(doc) if person.get("bench") else ''}
 <h2>The replica</h2>
 <p>{html.escape(m.get('gather_blurb',''))}</p>
-{f'<p><a href="{html.escape(gather)}">Open the office in Gather</a></p>' if gather else ''}
+{map_block(doc)}
+{f'<p style="margin-top:14px"><a href="{html.escape(gather)}">Open the office in Gather</a></p>' if gather else ''}
+<div class="card warm"><h3>One thing before you join</h3>
+<p style="margin:0">{html.escape(m.get('gather_note',''))}</p></div>
 <div class="foot">{html.escape(m.get('footer',''))}
 <span class="pill">this page is unlisted</span></div>""")
 
