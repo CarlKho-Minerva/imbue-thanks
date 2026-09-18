@@ -203,7 +203,6 @@ def bench_page(doc):
 def person_page(doc, person):
     m = doc.get("meta", {})
     gather = (m.get("gather_url") or "").strip()
-    asks = "".join(f"<li>{html.escape(a)}</li>" for a in person.get("asks", []))
     return page(f"For {person.get('first','you')}", f"""
 <p class="eyebrow">a message for one person</p>
 <h1>{html.escape(person.get('name',''))}</h1>
@@ -212,8 +211,6 @@ def person_page(doc, person):
 {player(m)}
 <p class="eyebrow" style="margin:28px 0 8px">Then yours</p>
 {player(person)}
-<div class="card"><p class="note">{html.escape(person.get('note',''))}</p></div>
-{f'<h2>If you have ten minutes</h2><ul>{asks}</ul>' if asks else ''}
 {bench_block(doc) if person.get("bench") else ''}
 <h2>The replica</h2>
 <p>{html.escape(m.get('gather_blurb',''))}</p>
