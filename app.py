@@ -208,6 +208,9 @@ def person_page(doc, person):
 <p class="eyebrow">a message for one person</p>
 <h1>{html.escape(person.get('name',''))}</h1>
 <p class="lead">{html.escape(person.get('headline',''))}</p>
+<p class="eyebrow" style="margin:28px 0 8px">Start here, the one for everybody</p>
+{player(m)}
+<p class="eyebrow" style="margin:28px 0 8px">Then yours</p>
 {player(person)}
 <div class="card"><p class="note">{html.escape(person.get('note',''))}</p></div>
 {f'<h2>If you have ten minutes</h2><ul>{asks}</ul>' if asks else ''}
